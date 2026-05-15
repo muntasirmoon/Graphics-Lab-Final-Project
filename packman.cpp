@@ -1,6 +1,9 @@
 #include <GL/glut.h>
 #include <iostream>
 #include <cmath>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
@@ -49,6 +52,52 @@ int pacmanX = 1;
 int pacmanY = 1;
 
 
+// ====================================
+// GHOST STRUCTURE
+// ====================================
+
+struct Ghost
+{
+    int x, y;
+
+    float r, g, b;
+
+    int dirX, dirY;
+
+    int moveCounter;
+};
+
+
+// Ghost List
+vector<Ghost> ghosts;
+
+
+// ====================================
+// INITIALIZE GHOSTS
+// ====================================
+
+void initializeGhosts()
+{
+    ghosts.clear();
+
+    Ghost ghost1 = {7, 7, 1.0f, 0.0f, 0.0f, 1, 0, 0};
+
+    Ghost ghost2 = {7, 8, 0.0f, 1.0f, 1.0f, -1, 0, 0};
+
+    Ghost ghost3 = {8, 7, 1.0f, 0.5f, 0.0f, 0, 1, 0};
+
+    Ghost ghost4 = {8, 8, 1.0f, 0.6f, 0.8f, 0, -1, 0};
+
+    ghosts.push_back(ghost1);
+
+    ghosts.push_back(ghost2);
+
+    ghosts.push_back(ghost3);
+
+    ghosts.push_back(ghost4);
+}
+
+
 // Function to draw one square
 void drawSquare(int x, int y, float r, float g, float b)
 {
@@ -95,10 +144,7 @@ void drawPellets()
 }
 
 
-// ================================
-// PACMAN DRAWING FUNCTION
-// ================================
-
+// Pacman Drawing
 void drawPacman()
 {
     glColor3f(1.0f, 1.0f, 0.0f);
@@ -119,6 +165,33 @@ void drawPacman()
 }
 
 
+// ====================================
+// SIMPLE GHOST DRAWING
+// ====================================
+
+void drawGhosts()
+{
+    for(const auto& ghost : ghosts)
+    {
+        glColor3f(ghost.r, ghost.g, ghost.b);
+
+        glBegin(GL_POLYGON);
+
+        for(int i = 0; i < 360; i++)
+        {
+            float theta = i * 3.14159f / 180;
+
+            glVertex2f(
+                ghost.x * CELL + CELL / 2 + 15 * cos(theta),
+                ghost.y * CELL + CELL / 2 + 15 * sin(theta)
+            );
+        }
+
+        glEnd();
+    }
+}
+
+
 // Display Function
 void display()
 {
@@ -129,12 +202,10 @@ void display()
     {
         for(int x = 0; x < COLS; x++)
         {
-            // Wall
             if(maze[y][x] == 1)
             {
                 drawSquare(x, y, 0.0f, 0.0f, 1.0f);
             }
-            // Path
             else
             {
                 drawSquare(x, y, 0.0f, 0.0f, 0.0f);
@@ -147,6 +218,9 @@ void display()
 
     // Draw Pacman
     drawPacman();
+
+    // Draw Ghosts
+    drawGhosts();
 
     glutSwapBuffers();
 }
@@ -167,6 +241,10 @@ void init()
         ROWS * CELL,
         0
     );
+
+    srand(time(0));
+
+    initializeGhosts();
 }
 
 
@@ -182,7 +260,7 @@ int main(int argc, char** argv)
         ROWS * CELL
     );
 
-    glutCreateWindow("Pacman with Pellets");
+    glutCreateWindow("Pacman with Ghosts");
 
     init();
 
