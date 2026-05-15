@@ -1,3 +1,6 @@
+Maze with palate:
+
+
 #include <GL/glut.h>
 #include <iostream>
 
@@ -7,6 +10,7 @@ const int ROWS = 15;
 const int COLS = 15;
 const float CELL = 40.0f;
 
+// Maze Structure
 int maze[ROWS][COLS] = {
 
     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -42,7 +46,7 @@ int maze[ROWS][COLS] = {
 };
 
 
-// Function to draw one square block
+// Function to draw one square
 void drawSquare(int x, int y, float r, float g, float b)
 {
     glColor3f(r, g, b);
@@ -61,7 +65,36 @@ void drawSquare(int x, int y, float r, float g, float b)
 }
 
 
-// Display function
+// Pellet Rendering Function
+void drawPellets()
+{
+    // Pellet color
+    glColor3f(1.0f, 1.0f, 0.5f);
+
+    for(int y = 0; y < ROWS; y++)
+    {
+        for(int x = 0; x < COLS; x++)
+        {
+            // Draw pellets on path cells
+            if(maze[y][x] == 0)
+            {
+                glPointSize(5);
+
+                glBegin(GL_POINTS);
+
+                glVertex2f(
+                    x * CELL + CELL / 2,
+                    y * CELL + CELL / 2
+                );
+
+                glEnd();
+            }
+        }
+    }
+}
+
+
+// Display Function
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT);
@@ -71,12 +104,12 @@ void display()
     {
         for(int x = 0; x < COLS; x++)
         {
-            // Draw walls in blue
+            // Wall
             if(maze[y][x] == 1)
             {
                 drawSquare(x, y, 0.0f, 0.0f, 1.0f);
             }
-            // Draw paths in black
+            // Path
             else
             {
                 drawSquare(x, y, 0.0f, 0.0f, 0.0f);
@@ -84,20 +117,28 @@ void display()
         }
     }
 
+    // Draw Pellets
+    drawPellets();
+
     glutSwapBuffers();
 }
 
 
-// Initialize OpenGL
+// OpenGL Initialization
 void init()
 {
-    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
     glMatrixMode(GL_PROJECTION);
 
     glLoadIdentity();
 
-    gluOrtho2D(0, COLS * CELL, ROWS * CELL, 0);
+    gluOrtho2D(
+        0,
+        COLS * CELL,
+        ROWS * CELL,
+        0
+    );
 }
 
 
@@ -108,9 +149,12 @@ int main(int argc, char** argv)
 
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
 
-    glutInitWindowSize(COLS * CELL, ROWS * CELL);
+    glutInitWindowSize(
+        COLS * CELL,
+        ROWS * CELL
+    );
 
-    glutCreateWindow("Pacman Maze");
+    glutCreateWindow("Pacman Maze with Pellets");
 
     init();
 
