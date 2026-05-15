@@ -1,6 +1,3 @@
-Maze with palate:
-
-
 #include <GL/glut.h>
 #include <iostream>
 
