@@ -1,5 +1,6 @@
 #include <GL/glut.h>
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
@@ -43,6 +44,11 @@ int maze[ROWS][COLS] = {
 };
 
 
+// Pacman Position
+int pacmanX = 1;
+int pacmanY = 1;
+
+
 // Function to draw one square
 void drawSquare(int x, int y, float r, float g, float b)
 {
@@ -65,14 +71,12 @@ void drawSquare(int x, int y, float r, float g, float b)
 // Pellet Rendering Function
 void drawPellets()
 {
-    // Pellet color
     glColor3f(1.0f, 1.0f, 0.5f);
 
     for(int y = 0; y < ROWS; y++)
     {
         for(int x = 0; x < COLS; x++)
         {
-            // Draw pellets on path cells
             if(maze[y][x] == 0)
             {
                 glPointSize(5);
@@ -88,6 +92,30 @@ void drawPellets()
             }
         }
     }
+}
+
+
+// ================================
+// PACMAN DRAWING FUNCTION
+// ================================
+
+void drawPacman()
+{
+    glColor3f(1.0f, 1.0f, 0.0f);
+
+    glBegin(GL_POLYGON);
+
+    for(int i = 0; i < 360; i++)
+    {
+        float theta = i * 3.14159f / 180;
+
+        glVertex2f(
+            pacmanX * CELL + CELL / 2 + 15 * cos(theta),
+            pacmanY * CELL + CELL / 2 + 15 * sin(theta)
+        );
+    }
+
+    glEnd();
 }
 
 
@@ -116,6 +144,9 @@ void display()
 
     // Draw Pellets
     drawPellets();
+
+    // Draw Pacman
+    drawPacman();
 
     glutSwapBuffers();
 }
@@ -151,7 +182,7 @@ int main(int argc, char** argv)
         ROWS * CELL
     );
 
-    glutCreateWindow("Pacman Maze with Pellets");
+    glutCreateWindow("Pacman with Pellets");
 
     init();
 
