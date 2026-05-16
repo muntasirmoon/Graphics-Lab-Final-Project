@@ -166,28 +166,125 @@ void drawPacman()
 
 
 // ====================================
-// SIMPLE GHOST DRAWING
+// CLASSIC GHOST DRAWING
 // ====================================
 
+void drawGhost(const Ghost& ghost)
+{
+    float centerX = ghost.x * CELL + CELL / 2;
+    float centerY = ghost.y * CELL + CELL / 2;
+
+    float radius = 15.0f;
+
+    // Ghost Body Color
+    glColor3f(ghost.r, ghost.g, ghost.b);
+
+    glBegin(GL_POLYGON);
+
+    // Upper Circle Part
+    for(int i = 0; i <= 180; i++)
+    {
+        float theta = i * 3.14159f / 180;
+
+        glVertex2f(
+            centerX + radius * cos(theta),
+            centerY + radius * sin(theta)
+        );
+    }
+
+    // Bottom Wave Part
+    glVertex2f(centerX + radius, centerY);
+
+    glVertex2f(centerX + radius * 0.6f, centerY - radius * 0.3f);
+
+    glVertex2f(centerX + radius * 0.3f, centerY - radius * 0.6f);
+
+    glVertex2f(centerX, centerY - radius * 0.3f);
+
+    glVertex2f(centerX - radius * 0.3f, centerY - radius * 0.6f);
+
+    glVertex2f(centerX - radius * 0.6f, centerY - radius * 0.3f);
+
+    glVertex2f(centerX - radius, centerY);
+
+    glEnd();
+
+
+    // Eyes
+    glColor3f(1.0f, 1.0f, 1.0f);
+
+    // Left Eye
+    glBegin(GL_POLYGON);
+
+    for(int i = 0; i < 360; i++)
+    {
+        float theta = i * 3.14159f / 180;
+
+        glVertex2f(
+            centerX - 6 + 4 * cos(theta),
+            centerY + 5 + 4 * sin(theta)
+        );
+    }
+
+    glEnd();
+
+    // Right Eye
+    glBegin(GL_POLYGON);
+
+    for(int i = 0; i < 360; i++)
+    {
+        float theta = i * 3.14159f / 180;
+
+        glVertex2f(
+            centerX + 6 + 4 * cos(theta),
+            centerY + 5 + 4 * sin(theta)
+        );
+    }
+
+    glEnd();
+
+
+    // Pupils
+    glColor3f(0.0f, 0.0f, 0.0f);
+
+    // Left Pupil
+    glBegin(GL_POLYGON);
+
+    for(int i = 0; i < 360; i++)
+    {
+        float theta = i * 3.14159f / 180;
+
+        glVertex2f(
+            centerX - 6 + 2 * cos(theta),
+            centerY + 5 + 2 * sin(theta)
+        );
+    }
+
+    glEnd();
+
+    // Right Pupil
+    glBegin(GL_POLYGON);
+
+    for(int i = 0; i < 360; i++)
+    {
+        float theta = i * 3.14159f / 180;
+
+        glVertex2f(
+            centerX + 6 + 2 * cos(theta),
+            centerY + 5 + 2 * sin(theta)
+        );
+    }
+
+    glEnd();
+}
+
+
+// Draw All Ghosts
 void drawGhosts()
 {
     for(const auto& ghost : ghosts)
     {
-        glColor3f(ghost.r, ghost.g, ghost.b);
-
-        glBegin(GL_POLYGON);
-
-        for(int i = 0; i < 360; i++)
-        {
-            float theta = i * 3.14159f / 180;
-
-            glVertex2f(
-                ghost.x * CELL + CELL / 2 + 15 * cos(theta),
-                ghost.y * CELL + CELL / 2 + 15 * sin(theta)
-            );
-        }
-
-        glEnd();
+        drawGhost(ghost);
     }
 }
 
@@ -260,7 +357,7 @@ int main(int argc, char** argv)
         ROWS * CELL
     );
 
-    glutCreateWindow("Pacman with Ghosts");
+    glutCreateWindow("Pacman Classic Ghosts");
 
     init();
 
