@@ -4,6 +4,7 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <string>
 
 using namespace std;
 
@@ -50,6 +51,14 @@ int maze[ROWS][COLS] = {
 // Pacman Position
 int pacmanX = 1;
 int pacmanY = 1;
+
+
+// ====================================
+// SCORE & LIVES
+// ====================================
+
+int score = 0;
+int lives = 3;
 
 
 // ====================================
@@ -117,6 +126,23 @@ void drawSquare(int x, int y, float r, float g, float b)
 }
 
 
+// ====================================
+// TEXT DRAWING FUNCTION
+// ====================================
+
+void drawText(float x, float y, string text)
+{
+    glColor3f(1.0f, 1.0f, 1.0f);
+
+    glRasterPos2f(x, y);
+
+    for(char c : text)
+    {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
+    }
+}
+
+
 // Pellet Rendering Function
 void drawPellets()
 {
@@ -176,12 +202,10 @@ void drawGhost(const Ghost& ghost)
 
     float radius = 15.0f;
 
-    // Ghost Body Color
     glColor3f(ghost.r, ghost.g, ghost.b);
 
     glBegin(GL_POLYGON);
 
-    // Upper Circle Part
     for(int i = 0; i <= 180; i++)
     {
         float theta = i * 3.14159f / 180;
@@ -192,7 +216,6 @@ void drawGhost(const Ghost& ghost)
         );
     }
 
-    // Bottom Wave Part
     glVertex2f(centerX + radius, centerY);
 
     glVertex2f(centerX + radius * 0.6f, centerY - radius * 0.3f);
@@ -208,74 +231,6 @@ void drawGhost(const Ghost& ghost)
     glVertex2f(centerX - radius, centerY);
 
     glEnd();
-
-
-    // Eyes
-    glColor3f(1.0f, 1.0f, 1.0f);
-
-    // Left Eye
-    glBegin(GL_POLYGON);
-
-    for(int i = 0; i < 360; i++)
-    {
-        float theta = i * 3.14159f / 180;
-
-        glVertex2f(
-            centerX - 6 + 4 * cos(theta),
-            centerY + 5 + 4 * sin(theta)
-        );
-    }
-
-    glEnd();
-
-    // Right Eye
-    glBegin(GL_POLYGON);
-
-    for(int i = 0; i < 360; i++)
-    {
-        float theta = i * 3.14159f / 180;
-
-        glVertex2f(
-            centerX + 6 + 4 * cos(theta),
-            centerY + 5 + 4 * sin(theta)
-        );
-    }
-
-    glEnd();
-
-
-    // Pupils
-    glColor3f(0.0f, 0.0f, 0.0f);
-
-    // Left Pupil
-    glBegin(GL_POLYGON);
-
-    for(int i = 0; i < 360; i++)
-    {
-        float theta = i * 3.14159f / 180;
-
-        glVertex2f(
-            centerX - 6 + 2 * cos(theta),
-            centerY + 5 + 2 * sin(theta)
-        );
-    }
-
-    glEnd();
-
-    // Right Pupil
-    glBegin(GL_POLYGON);
-
-    for(int i = 0; i < 360; i++)
-    {
-        float theta = i * 3.14159f / 180;
-
-        glVertex2f(
-            centerX + 6 + 2 * cos(theta),
-            centerY + 5 + 2 * sin(theta)
-        );
-    }
-
-    glEnd();
 }
 
 
@@ -289,7 +244,10 @@ void drawGhosts()
 }
 
 
-// Display Function
+// ====================================
+// DISPLAY FUNCTION
+// ====================================
+
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT);
@@ -318,6 +276,15 @@ void display()
 
     // Draw Ghosts
     drawGhosts();
+
+    // ====================================
+    // DRAW HUD
+    // ====================================
+
+    drawText(10, 20, "Score: " + to_string(score));
+
+    drawText(COLS * CELL - 120, 20,
+             "Lives: " + to_string(lives));
 
     glutSwapBuffers();
 }
@@ -357,7 +324,7 @@ int main(int argc, char** argv)
         ROWS * CELL
     );
 
-    glutCreateWindow("Pacman Classic Ghosts");
+    glutCreateWindow("Pacman HUD System");
 
     init();
 
