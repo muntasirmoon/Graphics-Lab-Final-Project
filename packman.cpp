@@ -48,9 +48,15 @@ int maze[ROWS][COLS] = {
 };
 
 
-// Pacman Position
+// ====================================
+// PACMAN VARIABLES
+// ====================================
+
 int pacmanX = 1;
 int pacmanY = 1;
+
+int dirX = 0;
+int dirY = 0;
 
 
 // ====================================
@@ -170,7 +176,10 @@ void drawPellets()
 }
 
 
-// Pacman Drawing
+// ====================================
+// PACMAN DRAWING
+// ====================================
+
 void drawPacman()
 {
     glColor3f(1.0f, 1.0f, 0.0f);
@@ -188,6 +197,70 @@ void drawPacman()
     }
 
     glEnd();
+}
+
+
+// ====================================
+// PACMAN MOVEMENT
+// ====================================
+
+void movePacman()
+{
+    int nextX = pacmanX + dirX;
+
+    int nextY = pacmanY + dirY;
+
+    // Wall Collision Check
+    if(maze[nextY][nextX] != 1)
+    {
+        pacmanX = nextX;
+        pacmanY = nextY;
+    }
+}
+
+
+// ====================================
+// TIMER FUNCTION
+// ====================================
+
+void timer(int value)
+{
+    movePacman();
+
+    glutPostRedisplay();
+
+    glutTimerFunc(200, timer, 0);
+}
+
+
+// ====================================
+// KEYBOARD CONTROLS
+// ====================================
+
+void handleKeys(int key, int, int)
+{
+    switch(key)
+    {
+        case GLUT_KEY_UP:
+            dirX = 0;
+            dirY = -1;
+            break;
+
+        case GLUT_KEY_DOWN:
+            dirX = 0;
+            dirY = 1;
+            break;
+
+        case GLUT_KEY_LEFT:
+            dirX = -1;
+            dirY = 0;
+            break;
+
+        case GLUT_KEY_RIGHT:
+            dirX = 1;
+            dirY = 0;
+            break;
+    }
 }
 
 
@@ -268,19 +341,13 @@ void display()
         }
     }
 
-    // Draw Pellets
     drawPellets();
 
-    // Draw Pacman
     drawPacman();
 
-    // Draw Ghosts
     drawGhosts();
 
-    // ====================================
-    // DRAW HUD
-    // ====================================
-
+    // HUD
     drawText(10, 20, "Score: " + to_string(score));
 
     drawText(COLS * CELL - 120, 20,
@@ -312,7 +379,10 @@ void init()
 }
 
 
-// Main Function
+// ====================================
+// MAIN FUNCTION
+// ====================================
+
 int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
@@ -324,11 +394,15 @@ int main(int argc, char** argv)
         ROWS * CELL
     );
 
-    glutCreateWindow("Pacman HUD System");
+    glutCreateWindow("Pacman Movement System");
 
     init();
 
     glutDisplayFunc(display);
+
+    glutSpecialFunc(handleKeys);
+
+    glutTimerFunc(200, timer, 0);
 
     glutMainLoop();
 
