@@ -12,7 +12,13 @@ const int ROWS = 15;
 const int COLS = 15;
 const float CELL = 40.0f;
 
-// Maze Structure
+// ====================================
+// MAZE
+// 0 = pellet path
+// 1 = wall
+// 2 = eaten pellet
+// ====================================
+
 int maze[ROWS][COLS] = {
 
     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -113,7 +119,10 @@ void initializeGhosts()
 }
 
 
-// Function to draw one square
+// ====================================
+// DRAW SQUARE
+// ====================================
+
 void drawSquare(int x, int y, float r, float g, float b)
 {
     glColor3f(r, g, b);
@@ -133,7 +142,7 @@ void drawSquare(int x, int y, float r, float g, float b)
 
 
 // ====================================
-// TEXT DRAWING FUNCTION
+// TEXT DRAWING
 // ====================================
 
 void drawText(float x, float y, string text)
@@ -149,7 +158,10 @@ void drawText(float x, float y, string text)
 }
 
 
-// Pellet Rendering Function
+// ====================================
+// DRAW PELLETS
+// ====================================
+
 void drawPellets()
 {
     glColor3f(1.0f, 1.0f, 0.5f);
@@ -158,6 +170,7 @@ void drawPellets()
     {
         for(int x = 0; x < COLS; x++)
         {
+            // Only draw uneaten pellets
             if(maze[y][x] == 0)
             {
                 glPointSize(5);
@@ -214,7 +227,19 @@ void movePacman()
     if(maze[nextY][nextX] != 1)
     {
         pacmanX = nextX;
+
         pacmanY = nextY;
+
+        // ====================================
+        // PELLET EATING
+        // ====================================
+
+        if(maze[pacmanY][pacmanX] == 0)
+        {
+            maze[pacmanY][pacmanX] = 2;
+
+            score += 10;
+        }
     }
 }
 
@@ -271,6 +296,7 @@ void handleKeys(int key, int, int)
 void drawGhost(const Ghost& ghost)
 {
     float centerX = ghost.x * CELL + CELL / 2;
+
     float centerY = ghost.y * CELL + CELL / 2;
 
     float radius = 15.0f;
@@ -307,7 +333,10 @@ void drawGhost(const Ghost& ghost)
 }
 
 
-// Draw All Ghosts
+// ====================================
+// DRAW ALL GHOSTS
+// ====================================
+
 void drawGhosts()
 {
     for(const auto& ghost : ghosts)
@@ -357,7 +386,10 @@ void display()
 }
 
 
-// OpenGL Initialization
+// ====================================
+// INITIALIZATION
+// ====================================
+
 void init()
 {
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -394,7 +426,7 @@ int main(int argc, char** argv)
         ROWS * CELL
     );
 
-    glutCreateWindow("Pacman Movement System");
+    glutCreateWindow("Pacman Pellet System");
 
     init();
 
