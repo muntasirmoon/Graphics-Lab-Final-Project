@@ -173,6 +173,7 @@ void drawPellets()
     {
         for(int x = 0; x < COLS; x++)
         {
+            // Only draw uneaten pellets
             if(maze[y][x] == 0)
             {
                 glPointSize(5);
